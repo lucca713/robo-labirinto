@@ -114,8 +114,8 @@ export class EnvironmentService {
     if (action === 0) {
       this.IrParaCima(posicaoRobo.linha, posicaoRobo.coluna)
     } else if (action === 1) {
-
-    }
+      this.irParaBaixo(posicaoRobo.linha, posicaoRobo.coluna)
+    } else if (action === 2)
   }
 
 }
