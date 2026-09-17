@@ -70,7 +70,7 @@ export class EnvironmentService {
   }
 
   irParaBaixo(linhaAtual: number, colunaAtual: number): { recompensa: Number, novaLinha: Number, novaColuna: Number, chegou: boolean } {
-    if (linhaAtual <= 4) {
+    if (linhaAtual < 4) {
       if (this.maze[linhaAtual + 1][colunaAtual] != Cell.WALL) {
 
         if (this.maze[linhaAtual + 1][colunaAtual] === Cell.GOAL) {
@@ -97,6 +97,71 @@ export class EnvironmentService {
         return { recompensa: -10, novaLinha: linhaAtual, novaColuna: colunaAtual, chegou: false }
       }
     }
+
+    const resetar = this.reset()
+    return { recompensa: -10, novaLinha: resetar.linha, novaColuna: resetar.coluna, chegou: false }
+  }
+
+  irParaDireita(linhaAtual: number, colunaAtual: number): { recompensa: Number, novaLinha: Number, novaColuna: Number, chegou: boolean } {
+    if (colunaAtual < 4) {
+      if (this.maze[linhaAtual][colunaAtual + 1] != Cell.WALL) {
+        if (this.maze[linhaAtual][colunaAtual + 1] === Cell.GOAL) {
+
+          this.aux = [linhaAtual][colunaAtual + 1]
+          this.maze[linhaAtual][colunaAtual + 1] = Cell.ROBO
+
+          return { recompensa: 100, novaLinha: linhaAtual, novaColuna: colunaAtual + 1, chegou: true }
+
+        }
+        //colocar o robo na nova posicao
+        this.aux = [linhaAtual][colunaAtual + 1]
+        this.maze[linhaAtual][colunaAtual + 1] = Cell.ROBO
+
+        return {
+          recompensa: -1,
+          novaLinha: linhaAtual, novaColuna: colunaAtual + 1, chegou: false
+        }
+      } else {
+        this.maze[linhaAtual][colunaAtual] = Cell.ROBO
+
+        //robo for para a parede mantem na mesma posicao
+        return { recompensa: -10, novaLinha: linhaAtual, novaColuna: colunaAtual, chegou: false }
+      }
+    }
+    //resetra por que caiu
+    const resetar = this.reset()
+    return { recompensa: -10, novaLinha: resetar.linha, novaColuna: resetar.coluna, chegou: false }
+  }
+
+  irParaEsquerda(linhaAtual: number, colunaAtual: number): { recompensa: Number, novaLinha: Number, novaColuna: Number, chegou: boolean } {
+    if (colunaAtual > 0) {
+      if (this.maze[linhaAtual][colunaAtual - 1] != Cell.WALL) {
+        if (this.maze[linhaAtual][colunaAtual - 1] === Cell.GOAL) {
+
+          this.aux = [linhaAtual][colunaAtual - 1]
+          this.maze[linhaAtual][colunaAtual - 1] = Cell.ROBO
+
+          return { recompensa: 100, novaLinha: linhaAtual, novaColuna: colunaAtual - 1, chegou: true }
+
+        }
+        //colocar o robo na nova posicao
+        this.aux = [linhaAtual][colunaAtual - 1]
+        this.maze[linhaAtual][colunaAtual - 1] = Cell.ROBO
+
+        return {
+          recompensa: -1,
+          novaLinha: linhaAtual, novaColuna: colunaAtual - 1, chegou: false
+        }
+      } else {
+        this.maze[linhaAtual][colunaAtual] = Cell.ROBO
+
+        //robo for para a parede mantem na mesma posicao
+        return { recompensa: -10, novaLinha: linhaAtual, novaColuna: colunaAtual, chegou: false }
+      }
+    }
+    //resetra por que caiu
+    const resetar = this.reset()
+    return { recompensa: -10, novaLinha: resetar.linha, novaColuna: resetar.coluna, chegou: false }
   }
 
   pegarposicaoRobo(): { linha: number, coluna: number } {
@@ -115,7 +180,11 @@ export class EnvironmentService {
       this.IrParaCima(posicaoRobo.linha, posicaoRobo.coluna)
     } else if (action === 1) {
       this.irParaBaixo(posicaoRobo.linha, posicaoRobo.coluna)
-    } else if (action === 2)
+    } else if (action === 2) {
+      this.irParaDireita(posicaoRobo.linha, posicaoRobo.coluna)
+    } else if (action === 3) {
+      this.irParaEsquerda(posicaoRobo.linha, posicaoRobo.coluna)
+    }
   }
 
 }
